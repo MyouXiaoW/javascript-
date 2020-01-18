@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+
+<script>
+    /*
+        策略模式指的是定义一系列的算法，把他们一个个封装起来
+    */
+    //1.面向对象的写法
+    var PerformaceS = function(){}
+
+    PerformaceS.prototype.calulate = function(salary){
+        return salary * 4
+    }
+
+    var PerformaceA = function(){}
+
+    PerformaceA.prototype.calulate = function(salary){
+        return salary * 3
+    }
+
+    var PerformaceB = function(){}
+
+    PerformaceB.prototype.calulate = function(salary){
+        return salary * 2
+    }
+    //Bonus就是context，不涉及任何的算法
+    var Bonus = function(){
+        this.salary = null
+        this.strategy = null
+    }
+
+    Bonus.prototype.setSalary = function(salary){
+        this.salary = salary
+    }
+
+    Bonus.prototype.setStrategy = function(strategy){
+        this.strategy = strategy
+    }
+
+    Bonus.prototype.getBonus = function(){
+        return this.strategy.calulate(this.salary)
+    }
+
+
+    //2.javascript实现
+
+    var strategies = {
+        'S':function(salary){
+            return salary*4
+        },
+        'A':function(salary){
+            return salary*3
+        },
+        'B':function(salary){
+            return salary*2
+        },
+    }
+
+    var calulateBonus = function(level,salary){
+        return strategies[level](salary)
+    }
+
+
+
+
+</script>
+</html>

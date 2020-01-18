@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    //使用代理之后的代理模式以后，Creatdiv可以进行复用
+    var CreatDiv = function(html){
+        this.html = html
+        this.init()
+    }
+
+    CreatDiv.prototype.init = function(){
+        var div = document.createElement('div')
+        div.innerHTML = this.html
+        document.body.appendChild(div)
+    }
+
+    var ProxySingletonCreatDiv = (function(){
+        var instance ;
+        return function(html){
+            if(!instance){
+                instance = new CreatDiv(html)
+            }
+
+            return instance
+        }
+    })()
+
+</script>
+
+</html>

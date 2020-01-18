@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+
+    /*
+    
+        实现一个自定义事件
+
+        先进行订阅才能发布
+    
+    */
+
+    var SaleOffices = function(){
+        this.clientList = {}
+    }
+
+    SaleOffices.prototype.listen = function(key,fn){
+        if(!this.clientList[key]){
+            this.clientList[key] = []
+        }
+
+        this.clientList[key].push(fn)
+    }
+
+    SaleOffices.prototype.remove = function(key,fn){
+        var fns = this.clientList[key]
+        
+        if(!fns){
+            return false
+        }
+
+        if(!fn){
+            fns && (fns.length = 0)
+        }else{
+            for(var l =fns.length-1;l>=0;l--){
+                var _fn = fns[l];
+                if(_fn ===fn){
+                    fns.splice(l,1)
+                }
+            }
+        }   
+    }   
+
+    SaleOffices.prototype.trigger = function(){
+        var key = Array.prototype.shift.call(arguments),
+        fns = this.clientList[key];
+
+        if(!fns || fns.length ===0){
+            return false
+        }
+
+        for(var i=0,fn;fn = fns[i++];){
+            fn.apply(this,arguments)
+        }
+    }
+
+    var saleOffices = new SaleOffices();
+
+    saleOffices.listen('a',function(price){
+        console.log('a有'+price)
+    })
+
+    saleOffices.trigger('a',100000)
+
+
+</script>
+</html>

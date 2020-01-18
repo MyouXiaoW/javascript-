@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+/*
+    call、apply实际用途
+    1.改变this指向
+    2.Function.prototype.bind
+    3.借用其他对象的方法
+
+*/
+//1.改变this指向就不想详细说了
+//2.Function.prototype.bind
+
+Function.prototype.newBind = function (){
+    var self = this,
+    context = [].shift.call(arguments),
+    arg = [].slice.call(arguments);
+
+    return function(){
+        return self.apply(context,arg.concat([].slice.call(arguments)))
+    }
+}
+
+var getName  = function(){
+    console.log(this)
+}
+
+var obj = {a:1111}
+
+var newGetName  = getName.newBind(obj,122332,112121)
+
+newGetName(1131121)
+
+//3.借用其他对象的方法
+
+var obj2= {length:0}
+Array.prototype.push.call(obj2,10)
+
+
+//v8实现push
+// function ArrayPush() {
+// var n = TO_UINT32( this.length ); var m = %_ArgumentsLength();
+// for (var i = 0; i < m; i++) {
+//     this[ i + n ] = %_Arguments( i ); // 复制元素 this.length = n + m; // 修正 length 属性的值
+// }
+// return this.length
+// };
+
+console.log(obj2)
+
+
+</script>
+</html>

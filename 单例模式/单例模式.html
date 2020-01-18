@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    //实现一个简单的单例模式
+
+    //第一种是把实例挂在Singleton函数上
+    var Singleton = function(name){
+        this.instance =null;
+        this.name = name
+    }
+
+    Singleton.getInstance = function(name){
+        if(!this.instance){
+            this.instance = new Singleton(name)
+        }
+        
+        return this.instance
+    }
+
+    var a = Singleton.getInstance('11111')
+    var b = Singleton.getInstance('222')
+
+    //第二种是使用闭包
+    var Singleton2 =function(name){
+        this.name=name
+    }
+
+    Singleton2.getInstance = (function(){
+        var instance = null
+
+        return function(name){
+            if(!instance){
+                instance = new Singleton2(name)
+            }
+            instance.name = name
+            return instance
+        }
+
+    })()
+
+    var c = Singleton2.getInstance('11111')
+    var d = Singleton2.getInstance('22222')
+
+    console.log(c ===d)
+    console.log(c)
+    console.log(d)
+</script>
+</html>

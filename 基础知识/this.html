@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id='div'>11111</div>
+</body>
+<script>
+/*
+this指向的4中情况
+1.作为对象的方法调用
+2.作为普通函数的调用
+3.构造器的调用
+4.function.prototype.call 和Function.prototype.apply
+*/
+
+//1.作为对象的方法调用
+var obj = {
+    a:1,
+    getA:function(){
+        return this.a
+    }
+}
+
+console.log(obj.getA())
+
+//2.作为普通函数调用
+window.name = 'globalname'
+
+var getName = function (){
+    return this.name
+}
+
+console.log(getName())
+
+var myObject = {
+    name:'梦游小王',
+    getName:function(){
+        return this.name
+    }
+}
+
+var getName2 = myObject.getName
+
+console.log(getName2())
+
+document.getElementById('div').onclick = function(){
+    console.log(this.id)
+    var that = this;
+    var callback = function(){
+        console.log(that)
+    }
+    callback()
+}
+
+//3.构造器调用
+var Myclass = function(){
+    this.name = '小王'
+    return {
+        name:'梦游小王'
+    }
+}
+
+var obj = new Myclass()
+
+console.log(obj.name)
+
+//4.Function.prototype.call 或 Function.prototype.apply
+var obj1 = {name :'sven',getName:function(){
+    return this.name
+}}
+
+var obj2 = {
+    name:'梦游小王'
+}
+
+console.log(obj1.getName.call(obj2))
+
+//因为浏览器的原因getElementById在不同的浏览器上实现方法不同再次封装的时候
+//会出现this丢失的情况
+
+document.getElementById = (function(func){
+    return function(){
+        return func.apply(document,arguments)
+    }
+})(document.getElementById)
+
+var getId = document.getElementById;
+
+console.log(getId('div'))
+
+//5.箭头函数中this的指向
+
+var obj3 ={
+    name:'11111',
+    getName :()=>this.name
+}
+
+console.log(obj3.getName())
+
+
+
+
+
+
+</script>
+</html>

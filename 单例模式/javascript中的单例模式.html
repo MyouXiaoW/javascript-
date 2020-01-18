@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 单例模式的核心是确保只有一个实例，并提供全局访问
+
+    /*
+        但 JavaScript 其实是一门无类(class-free)语言，也正因为如此，
+        生搬单例模式的概念并无 意义。在 JavaScript 中创建对象的方法非常简单，
+        既然我们只需要一个“唯一”的对象，
+        为什么要为它先创建一个“类”呢?这无异于穿棉衣洗澡，
+        传统的单例模式实现在 JavaScript 中并 不适用。
+    */
+
+    //全局变量不是单例模式，但在 JavaScript 开发中，我们经常会把全局变量当成单例来使用。
+
+    // /作为普通的开发者，我们有必要尽量减少全局变量的使用，即使需要，也要把它的污染降到 最低。
+    //以下几种方式可以相对降低全局变量带来的命名污染。
+
+    //1.使用命名空间
+    var namespace1 = {
+        a:function(){
+
+        },
+        b:function(){
+
+        }
+    }
+
+    //2.使用闭包封装私有变量
+    var user =(function(){
+        var __name = '梦游小王',
+            __age = 27
+
+        return {
+            getUserInfo:function(){
+                return __name + '-'+__age
+            }
+        }
+        
+    })()
+</script>
+</html>

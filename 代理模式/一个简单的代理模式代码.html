@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+
+<script>
+
+    /*
+    这是一个最简单的代理
+    */
+    var Flower = function(){}
+
+    var xiaoming ={
+        sendFlower:function(target){
+            var flower = new Flower
+            target.receiverFlower(flower)
+        }
+    }
+
+    var B = {
+        receiverFlower:function(flower){
+            A.receiverFlower(flower)
+        }
+    }
+
+    var A = {
+        receiverFlower:function(flower){
+            console.log('收到花'+ flower)
+        }
+    }
+
+    xiaoming.sendFlower(B)
+
+</script>
+</html>

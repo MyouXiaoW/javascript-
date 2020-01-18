@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+
+<script>
+    /*
+    
+    迭代器分为内部迭代器和外部迭代器
+
+    
+    */
+
+    //1.内部迭代器
+
+    var each =function(ary,callback){
+        for(var i=0,l = ary.length;i<l;i++){
+            callback.call(ary[i],ary[i],i)
+        }
+    }
+
+    var filter = function(ary,callback){
+        var result =[]
+        
+        for(var i=0,l=ary.length;i<l;i++){
+            if(callback.call(ary,ary[i],i)){
+                result.push(ary[i])
+            }
+        }
+
+        return result
+    }
+
+    //2.外部迭代器
+    var Iterator = function(obj){
+        var current =0
+
+        var next = function(){
+            current+=1
+        }
+
+        var isDone = function(){
+            return current>=obj.length
+        }
+
+        var getCurrItem = function(){
+            return obj[current]
+        }
+
+        return {
+            next:next,
+            isDone:isDone,
+            getCurrItem:getCurrItem
+        }
+    }
+
+
+</script>
+</html>

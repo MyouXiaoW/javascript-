@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+
+    var PENDING = 'PENDING'
+    var FULFILLED = 'FULFILLED'
+    var REJECTED = 'REJECTED'
+
+    var Promise1 = function(executor){
+        var self = this
+        self.status =PENDING //promise状态
+        self.data = undefined //Promise的值
+        self.onResolveCallback = []
+        self.onRejectCallback = []
+
+        function run(status,value,callbackQueue){
+            if(self.status === PENDING){
+                self.status = status;
+                self.data = value
+            }
+            var cb 
+            while (cb = callbackQueue.shift()) {
+                cb(value)
+            }
+        }
+
+        function resolve(value){
+
+            if(value)
+            setTimeout(function(){
+                run(FULFILLED,value,self.onResolveCallback)
+            },0)
+        }
+
+        function reject(reason){
+            setTimeout(function(){
+                run(REJECTED,reason,self.onRejectCallback)
+            },0)
+        }
+
+        try {
+            executor(resolve,reject)
+        } catch (error) {
+            reject(error)
+        }
+    }
+
+    Promise1.prototype ={
+        then:function(onResolved,onRejected){
+            var self = this;
+
+            onResolved = typeof onResolved === 'function' ? onResolved : function(v){}
+            onRejected = typeof onRejected === 'function' ? onRejected : function(r){}
+
+            return new Promise1(function(resolve,reject){
+                var methodCreator = function(method){
+                    return function(value){
+                        try {
+                            var result = method(value);
+                            if(result instanceof Promise1){
+                                result.then(resolve,reject)
+                            }else{
+                                resolve(result)
+                            }
+                        } catch (error) {
+                            reject(error)
+                        }
+                    }
+                }
+
+                var resolved = methodCreator(onResolved)
+                var rejected = methodCreator(onRejected)
+
+                switch(self.status){
+                    case REJECTED:
+                         rejected(self.data)
+                         break;
+                    case FULFILLED:
+                         resolved(self.data)
+                         break;
+                    case PENDING:
+                         self.onResolveCallback.push(resolved)
+                         self.onRejectCallback.push(rejected)
+                         break;
+                }
+
+            })
+        },
+        catch:function(onRejected){
+            return this.then(undefined,onRejected)
+        }
+    }
+
+    Promise1.resolve = function(value){
+        if(value instanceof Promise1)return value
+        return new Promise1(function(resolve){
+            resolve(value)
+        })
+    }
+
+    Promise1.reject = function(value){
+        return new Promise1(function(resolve,reject){
+            reject(value)
+        })
+    }
+
+    var a = new Promise1(function(resolve,reject){
+        reject(1)
+    })
+
+    a.then(function(res){
+        console.log(res)
+        return (res+1)
+    },function(res){
+        var error = new Error()
+        error.code =10
+        throw error
+    }).then(function(res){
+        console.log(res)
+    },function(res){
+        console.log(res.code)
+
+    })
+
+</script>
+</html>

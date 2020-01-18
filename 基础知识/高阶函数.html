@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+/*
+    高阶函数指的是至少满足下列条件中的一种函数
+    1.函数可以作为参数被传递
+    2.函数可以作为返回值输出
+
+    函数作为参数传递
+    1.回调函数
+    2.Array.prototype.sort
+
+    函数作为返回值输出
+    1.判断数据类型
+    2.单例模式
+
+    高阶函数实现AOP
+    在Spring框架中有before(前置通知) after（后置通知） around（环绕通知）
+
+    函数currying(部分求值)
+*/
+
+//1.回调函数
+//ajax请求
+
+//添加100个div
+
+var appendDiv= function(callback){
+    for(var i =0;i<100;i++){
+        var div = document.createElement('div');
+        document.body.appendChild(div)
+
+        if(callback ==='function'){
+            callback(div)
+        }
+    }
+}
+
+//2.Array.protorype.sort 
+
+
+//函数作为输出值返回
+//1.判断数据类型
+
+var isString = function(obj){
+    return Object.prototype.toString.call(obj) === '[object String]'
+}
+
+var isArray = function(obj){
+    return Object.prototype.toString.call(obj) === '[object Array]'
+}
+
+//改写成以下
+var isType = function(type){
+    return function(obj){
+        return Object.prototype.toString.call(obj) === '[object '+ type +']';
+    }
+}
+
+var Type={}
+
+for(var i =0,type;type=['String','Array','Number','Function','Null','Undefined','Symbol','Object'][i++];){
+    (function(type){
+        Type['is'+type] = function(obj){
+            return Object.prototype.toString.call(obj) === '[object '+ type +']';
+        }
+    })(type)
+}
+
+console.log(Type)
+
+//2.单例模式
+
+//高阶函数实现AOP
+//before 前置通知
+
+//AOP面向切面编程，是oop的变种
+//在oop中对象的所有的属性我们都是事先规定好的
+//在某种情况下我们想动态的增强对象这个时候可以使用aop
+Function.prototype.before = function(func){
+    var self = this;
+    return function(){
+        func.apply(self,arguments)
+        return self.apply(self,arguments)
+    }
+}
+
+Function.protorype.after = function(func){
+    var self = this;
+    return function(){
+        var ret = self.apply(self,arguments)
+        func.apply(self,arguments)
+        return ret
+    }
+}
+
+Function.prototype.around = function(beforeFun, afterFun) {
+	var _orgin = this;
+	return function() {
+		return _orgin.before(beforeFun).after(afterFun).apply(this, arguments);
+	}
+}
+
+//函数currying  
+//假设我们要编写一个计算每月开销的函数。在每天结束之前，我们都要记录今天花掉了多少钱
+
+var currying = function(fn){
+    var arg = []
+
+    return function(){
+        if(arguments.length ===0){
+           return fn.apply(this.arguments)
+        }else{
+            arg.push(arguments)
+            return arguments.callee
+        }
+
+    }
+}
+
+var cost = (function(){
+    var money = 0
+    return function(){
+        for(var i =0;i<arguments.length;i++){
+            money +=arg[i] 
+        }
+        return money
+    }
+})()
+
+//uncurrying 反柯里化
+//反柯里化的使用实例就是在Array.prototype中把this的过程提取出来
+
+//第一种方式
+Function.prototype.uncurrying = function(){
+    var self = this;
+    return function(){
+        var obj = Array.prototype.shift.call(arguments) //
+        return self.apply(obj,arguments)
+    }
+}
+
+//第二种方式
+Function.prototype.unCurrying = function(){
+    var self = this
+    return Function.prototype.call.apply(self,arguments)
+}
+
+//函数节流
+var throttle = function(fn,interval){
+    var __self = fn,
+        timer,
+        firstTime=true;
+
+    return function(){
+        var args = arguments,
+        __me = this;
+        if(firstTime){
+            __self.apply(__me,args);
+            return firstTime = false;
+        }
+
+        if(timer){
+            return false
+        }
+
+        timer = setTimeout(function(){
+            clearTimeout(timer);
+            timer = null;
+            __self.apply(__me,args)
+        },interval || 500)
+    }
+}
+
+//分时函数
+var timeChunk = function(arg,fn,count){
+    var timer,
+        obj;
+    
+    var len = arg.length;
+
+    var start = function(){
+        for(var i =0; i<Math.min(count || 1 , arg.length);i++){
+            var obj = arg.shift()
+            fn(obj)
+        }
+    }
+    return function(){
+        timer = setInterval(() => {
+            if(arg.length ===0){
+                return  clearInterval(timer)
+            }
+            start()
+        }, 200);
+    }
+}
+
+//惰性加载函数
+var addEvent = function( elem, type, handler ){ 
+    if ( window.addEventListener ){
+        addEvent = function( elem, type, handler ){ 
+            elem.addEventListener( type, handler, false );
+        }
+    }else if ( window.attachEvent ){
+        addEvent = function( elem, type, handler ){ 
+            elem.attachEvent( 'on' + type, handler );
+        } 
+    }
+        addEvent( elem, type, handler ); 
+    };
+
+
+</script>
+</html>

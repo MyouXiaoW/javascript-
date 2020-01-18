@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+</body>
+
+<script>
+    /*
+    变量的生存周期
+
+    除了变量的作用域之外，另外一个跟闭包有关的概念是变量的生存周期。
+    对于全局变量来说，全局变量的生存周期当然是永久的，除非我们主动销毁这个全局变量。
+    而对于在函数内用 var 关键字声明的局部变量来说，当退出函数时，
+    这些局部变量即失去了 它们的价值，它们都会随着函数调用的结束而被销毁:
+    
+
+    闭包的作用
+    1.封装变量
+    2.延续局部变量的寿命
+
+    闭包和面向对象设计
+
+    */
+   
+    //1.封装变量
+    //在一个计算乘法的函数中，如果多次输入的参数是一样的，我们可以把参数缓存起来，在下一次直接返回
+    var mult = (function(){
+        var cache ={}
+        var caculate = function(){
+            var a = 1
+            for(var i=0,l = arguments.length;i<l;i++){
+                a = a * arguments[i]
+            }
+            return a
+        }
+        return function(){
+            var args =[].join.call(arguments,',')
+
+            if(args in cache){
+                return cache[args]
+            }
+            return cache[args] = caculate.apply(null,arguments)
+        }
+    })()
+
+    console.log(mult(2,4))
+    //2.延续局部变量的寿命
+    //例子是在做埋点的时候在没有发送完http请求，就把变量回收
+
+    //闭包和面向对象设计
+
+    //闭包写法
+
+    var extent1 = function(){
+        var value = 0
+        return{
+            call:function(){
+                value++
+            }
+        }
+    }
+
+    //面向对象写法
+    var extent = {
+        value:0,
+        add:function(){
+            this.value++
+            console.log(this.value)
+        }
+    }
+
+    /*
+    
+跟闭包和内存泄露有关系的地方是，使用闭包的同时比较容易形成循环引用，如果闭包的作 用域链中保存着一些 DOM 节点，这时候就有可能造成内存泄露。但这本身并非闭包的问题，也
+并非 JavaScript 的问题。在 IE 浏览器中，由于 BOM 和 DOM 中的对象是使用 C++以 COM 对象 的方式实现的，而 COM 对象的垃圾收集机制采用的是引用计数策略。在基于引用计数策略的垃
+圾回收机制中，如果两个对象之间形成了循环引用，那么这两个对象都无法被回收，但循环引用
+造成的内存泄露在本质上也不是闭包造成的。
+    
+    */
+
+</script>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    /*
+        虚拟代理实现图片预加载
+
+        代理的意义，主要还是遵循单一职责原则
+
+        根据依赖倒置原则，代理和本体都是需要具有一致的接口
+    */
+
+    var myImage = (function(){
+        var imageNode = document.createElement('img')
+        document.body.appendChild(imageNode)
+        return {
+            setSrc :function(src){
+                imageNode.src =src
+            }
+        }
+    })()
+
+    var proxyImage = (function(){
+        var image = new Image()
+        image.onload = function(){
+            myImage.setSrc(this.src)
+        }
+        return {
+            setSrc:function(src){
+                myImage.setSrc('./5-121204193939-50.gif')
+                image.src = src
+            }
+        }
+    })()
+
+    proxyImage.setSrc('https://static.zhihu.com/heifetz/assets/apple-touch-icon-152.67c7b278.png')
+
+</script>
+</html>

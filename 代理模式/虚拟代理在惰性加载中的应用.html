@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    var miniConsole = {
+        log:function(){
+            console.log(Array.prototype.join.call(arguments))
+        }
+    }
+
+
+    var minConsole = (function(){
+        var cache = [];
+1
+   var handler = function( ev ){
+if ( ev.keyCode === 113 ){ 2
+var script = document.createElement( 'script' ); script.onload = function(){
+for ( var i = 0, fn; fn = cache[ i++ ]; ){ fn();
+} };
+script.src = 'miniConsole.js';
+document.getElementsByTagName( 'head' )[0].appendChild( script ); document.body.removeEventListener( 'keydown', handler );// 只加载一次 miniConsole.js
+} };
+document.body.addEventListener( 'keydown', handler, false );
+        return {
+            log:function(){
+                var arg = arguments
+                cache.push(function(){
+                    return miniConsole.log.apply(miniConsole,arg)
+                })
+            }
+        }
+    })()
+
+</script>
+</html>
